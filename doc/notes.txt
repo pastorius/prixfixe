@@ -10,3 +10,16 @@ negotiated
 yield management (depends on inventory and/or time of purchase)
 real-time (based on supply and demand)
 auction (competitive bidding)
+
+-----
+billing plan
+	keep billing separate (i.e., presentation)
+	more declarative syntax for billing plan
+	subcategorize according to pricing model/input?
+	
+pricing models are calculating totals
+	need to be sending back data
+	calculations are secondary
+	send back more data from pricing models
+	billing needs to be able to marry these up
+	

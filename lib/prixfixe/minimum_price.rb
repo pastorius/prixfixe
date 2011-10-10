@@ -9,5 +9,9 @@ module Prixfixe
       calculated = @model.calculate(items)
       calculated < @min ? @min : calculated
     end
+    
+    def to_s
+      "#{@model.to_s}; #{"%.2f" % @min} minimum"
+    end
   end
 end
