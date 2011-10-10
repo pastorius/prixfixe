@@ -1,0 +1,12 @@
+Static pricing models
+--------
+list price (price/unit)
+product feature/customer segment - dependent (feature A enabled?)
+volume dependent (list price, but tiered)
+
+Dynamic pricing
+------
+negotiated
+yield management (depends on inventory and/or time of purchase)
+real-time (based on supply and demand)
+auction (competitive bidding)
