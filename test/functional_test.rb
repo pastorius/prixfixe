@@ -1,31 +1,11 @@
 require 'test_helper'
 
-class BillingPlan
-  def initialize
-    @models = []
-  end
-  
-  def add_model(items, model)
-    @models << {:items => items, :model => model}
-  end
-  
-  def calculate
-    @models.inject(0) {|sum, model| sum + model[:model].calculate(model[:items])}
-  end
-end
-
 class RealTest < MiniTest::Unit::TestCase
-  def setup
-    @bp = BillingPlan.new
-  end
-  
   # price(@items, at(0, and_at(2.7, after(10))))
   def test_berkeley_oil_and_gas  # first 10 stmts free/mo; $2.70/stmt after 10
     @items = (0..19).to_a
     model = VolumePrice.new(StaticModel.new).add_tier(10, ListPrice.new(2.7))
-    p model.to_s
-    @bp.add_model(@items, model)
-    assert_equal 27, @bp.calculate
+    assert_equal 27, model.calculate(@items)
   end
   
   # price(phone, units_of(:recording_length, at(0.11)))
@@ -40,21 +20,105 @@ class RealTest < MiniTest::Unit::TestCase
 
     phone = @items.select {|i| i.import_source == 1}
     phone_model = UnitPrice.new(:recording_length, ListPrice.new(0.11))
-    @bp.add_model(phone, phone_model)
-    p phone_model.to_s
     
     uploads = @items.select {|i| i.import_source == 0}
     upload_model = ListPrice.new(0.75)
-    @bp.add_model(uploads, upload_model)
-    p upload_model.to_s
     
-    assert_equal 3.7, @bp.calculate
+    assert_equal 3.7, phone_model.calculate(phone) + upload_model.calculate(uploads)
   end
   
   # price(@items, at(1, with_minimum(50)))
   def test_castle_point  # $50 min/mo; $5/stmt after 10
-    @items = (0..19).to_a
-    @bp.add_model(@items, MinimumPrice.new(50, ListPrice.new(1)))
-    assert_equal 50, @bp.calculate
+    cl = client
+    co = Context.new
+    model = MinimumPrice.new(50, ListPrice.new(1))
+    
+    
+    co.add_context(Context.new.add_)
+    
+    assert_equal 50, model.calculate((0..19).to_a)
   end
+  
+  private
+  
+  def r
+    1 + rand(5)
+  end
+  
+  def gather(proc)
+    (0..r).to_a.collect { proc.call }
+  end
+  
+  def statement
+    OpenStruct.new(
+      :claim_number => "1000-#{r}",
+      :recording_length => 1
+    )
+  end
+  
+  def user
+    OpenStruct.new(
+      :name => "User #{r}",
+      :statements => gather(Proc.new{statement})
+    )
+  end
+  
+  def office
+    OpenStruct.new(
+      :name => "Office #{r}",
+      :users => gather(Proc.new{user})
+    )
+  end
+  
+  def client
+    OpenStruct.new(
+      :name => "Client #{r}",
+      :offices => gather(Proc.new{office})
+    )
+  end
+  
 end
+
+  
+  # def test_fur_reals
+  #   client = OpenStruct.new(
+  #     :name => 'Test Client',
+  #     :offices => [
+  #         OpenStruct.new(
+  #           :name => 'Office 1',
+  #           :statements => [
+  #             OpenStruct.new(:recording_length => 1),
+  #             OpenStruct.new(:recording_length => 1)
+  #           ]
+  #         ),
+  #         OpenStruct.new(
+  #           :name => 'Office 2',
+  #           :statements => [
+  #             OpenStruct.new(:recording_length => 1),
+  #             OpenStruct.new(:recording_length => 1),
+  #             OpenStruct.new(:recording_length => 1)
+  #           ]
+  #         )
+  #       ]
+  #   )
+  #   
+  #   client_context = Context.new(client)
+  #   client.offices.each do |o|
+  #     office_context = Context.new(o)
+  #     office_context.add_billable(o.statements, UnitPrice.new(1, :recording_length))
+  #     client_context.add_context(office_context)
+  #   end
+  #   bill_data = client_context.bill
+  #   {
+  #     :context => client,
+  #     :billables => [],
+  #     :contexts => [{
+  #       :context => o1,
+  #       :billables => [{
+  #         :context => s1
+  #       }]
+  #     }, {
+  #       :context => o2
+  #     }]
+  #   }
+  # end

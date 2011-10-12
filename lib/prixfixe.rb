@@ -5,4 +5,5 @@ module Prixfixe
   require 'prixfixe/conditional_price'
   require 'prixfixe/minimum_price'
   require 'prixfixe/unit_price'
+  require 'prixfixe/context'
 end

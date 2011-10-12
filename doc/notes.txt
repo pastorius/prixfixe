@@ -23,3 +23,55 @@ pricing models are calculating totals
 	send back more data from pricing models
 	billing needs to be able to marry these up
 	
+create pricing model
+	give it a context collection
+	it gives you back 
+		a way to calculate line item charges
+		a way to calculate context charges
+		
+assume all models can operate on individual items or collections
+model = VolumePrice.new(StaticModel.new).add_tier(10, ListPrice.new(2.7))
+calculators = model.charge_calculators_for(statements)
+
+contexts
+	provide grouping
+cardinality 
+	can be a number or an enumerable
+
+per minute
+client - context
+	organizations - context
+		statements	- context
+			statement - context
+				minutes	- cardinality
+
+client_context = Context.new(client, :name)
+client.offices.each do |o|
+	office_context = Context.new(o)
+	office_context.add_billable(o.statements, UnitPricing(:recording_length))
+	client_context.add_context(office_context)
+end
+
+transactional
+client - context
+	organizations - context
+		statements	- cardinality (+ volume pricing)
+
+client_context = Context.new(client)
+client.offices.each do |o|
+	office_context = Context.new(o)
+	office_context.add_billable(o.statements, VolumePricing.new)
+	client_context.add_context(office_context)
+end
+
+tpa
+client - context			
+	users - context
+		statements - cardinality
+			
+client_context = Context.new(client)
+client.users.each do |u|
+	user_context = Context.new(u)
+	user_context.add_billable(u.statements, ListPricing.new)
+	client_context.add_context(user_context)
+end
