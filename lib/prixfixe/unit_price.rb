@@ -1,4 +1,4 @@
-module Prixfixe
+module PrixFixe
   class UnitPrice < StaticModel
     def initialize(attr, model)
       @attr = attr

@@ -1,4 +1,4 @@
-module Prixfixe
+module PrixFixe
   class ListPrice < StaticModel
     def initialize(unit_price)
       @unit_price = unit_price

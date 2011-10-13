@@ -1,4 +1,4 @@
-module Prixfixe
+module PrixFixe
   class VolumePrice < StaticModel
     def initialize(base_model)
       @tiers = {0 => base_model}

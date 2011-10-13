@@ -1,4 +1,4 @@
-module Prixfixe
+module PrixFixe
   class MinimumPrice < StaticModel
     def initialize(min, model) 
       @min = min

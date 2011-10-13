@@ -1,4 +1,4 @@
-module Prixfixe
+module PrixFixe
   class StaticModel
     def calculate(items) 0; end
     def to_s() "No charge "; end

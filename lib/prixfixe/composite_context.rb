@@ -1,4 +1,4 @@
-module Prixfixe
+module PrixFixe
   class CompositeContext < Context
     def initialize(model = nil)
       @model = model

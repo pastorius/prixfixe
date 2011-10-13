@@ -8,5 +8,5 @@ require 'prixfixe/unit_price'
 require 'prixfixe/context'
 require 'prixfixe/composite_context'
 
-module Prixfixe
+module PrixFixe
 end

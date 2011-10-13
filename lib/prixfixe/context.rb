@@ -1,6 +1,6 @@
 require 'ostruct'
 
-module Prixfixe
+module PrixFixe
   class Context
     def initialize(ref = OpenStruct.new, model = StaticModel.new)
       @ref = ref

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Prixfixe::CompositeContext
+class PrixFixe::CompositeContext
   def contexts() @contexts ||= []; end
 end
 

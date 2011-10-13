@@ -1,4 +1,4 @@
-module Prixfixe
+module PrixFixe
   class ConditionalPrice < StaticModel
     def initialize(proc, model)
       @proc = proc
