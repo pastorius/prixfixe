@@ -1,1 +1,11 @@
+# bundler
+.bundle
+
+# rcov generated
+coverage
+
+# yard generated
+doc
+.yardoc
+
 Gemfile.lock
