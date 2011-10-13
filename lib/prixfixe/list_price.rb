@@ -11,12 +11,9 @@ module Prixfixe
         items * @unit_price
       end
     end
-<<<<<<< HEAD
-=======
     
     def to_s
       "#{"%.2f" % @unit_price} ea."
     end
->>>>>>> develop
   end
 end
