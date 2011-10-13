@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class Prixfixe::Context
-  def billables() @billables ||= []; end
   def contexts() @contexts ||= []; end
 end
 
@@ -12,13 +11,6 @@ class ContextTest < MiniTest::Unit::TestCase
     @items = items
   end
   
-  def test_add_billable
-    @context.add_billable(items, @model)
-
-    assert_equal @items, @context.billables.first[:ref]
-    assert_equal @model, @context.billables.first[:model]
-  end
-  
   def test_add_context
     subcontext = Context.new
     @context.add_context(subcontext)
@@ -27,34 +19,54 @@ class ContextTest < MiniTest::Unit::TestCase
   
   def test_to_hash
     @context = context
-    @context.add_context(context)
     
     hash = @context.to_hash
     
-    assert_equal({ 
-      :contexts => [expected_context], 
-      :billables => [expected_billable] 
-    }, hash)
+    assert_equal @items, hash[:ref]
+    assert_equal @model, hash[:model]
+    assert_equal expected_subcontext, hash[:contexts].first
   end
+  
+  def test_subtotal
+    @context = context
+    assert_equal items.size, @context.subtotal
+  end
+  
+  def test_total
+    @context = Context.new(@items, @model)
+    assert_equal items.size, @context.total
+  end
+  
+  def test_total_includes_subcontexts
+    @context = context
+    assert_equal items.size * 2, @context.total
+  end
+  
+  # def test_bill_includes_subtotal
+  #   @context = context
+  #   
+  #   bill = @context.bill
+  #   
+  #   assert_equal(@context.to_hash.merge(
+  #     :subtotal => @items.size,
+  #     :total => @items.size
+  #   ), bill)
+  # end
+  
+  # def test_bill_includes_total_subcontexts
+  #   @context = context
+  #   @context.add_context(context)
+  # 
+  #   assert_equal
+  # end
 
   def context
-    subcontext = Context.new
-    subcontext.add_billable(@items, @model)
-    subcontext
+    c = Context.new(@items, @model)
+    c.add_context(Context.new(@items, @model))
   end
   
-  def expected_context
-    {
-      :contexts => [],
-      :billables => [expected_billable]
-    }
-  end
-  
-  def expected_billable
-    {
-      :ref => @items,
-      :model => @model
-    }
+  def expected_subcontext
+    { :ref => @items, :model => @model, :contexts => [] }
   end
   
   def items

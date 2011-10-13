@@ -1,28 +1,40 @@
+require 'ostruct'
+
 module Prixfixe
-    class Context
-  
-    def add_billable(items, model)
-      billables << {:ref => items, :model => model}
-      self
+  class Context
+    def initialize(ref = OpenStruct.new, model = StaticModel.new)
+      @ref = ref
+      @model = model
     end
-  
+    
     def add_context(context)
       contexts << context
       self
     end
   
+    def subtotal
+      @model.calculate(@ref)
+    end
+    
+    def total
+      contexts.inject(subtotal) {|sum, c| sum + c.subtotal}
+    end
+    
+    def bill
+      to_hash.merge(:subtotal => subtotal)
+    end
+    
     def to_hash
-      { :contexts => contexts.collect {|c| c.to_hash},
-        :billables => billables.dup }
+      { 
+        :ref => @ref,
+        :model => @model,
+        :contexts => contexts.collect {|c| c.to_hash} 
+      }
     end
   
     private 
     def contexts
       @contexts ||= []
-    end
-
-    def billables
-      @billables ||= []
     end
   end
 end
