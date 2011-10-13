@@ -9,6 +9,9 @@ Dynamic pricing
 negotiated
 yield management (depends on inventory and/or time of purchase)
 real-time (based on supply and demand)
+<<<<<<< HEAD
+auction (competitive bidding)
+=======
 auction (competitive bidding)
 
 -----
@@ -75,3 +78,4 @@ client.users.each do |u|
 	user_context.add_billable(u.statements, ListPricing.new)
 	client_context.add_context(user_context)
 end
+>>>>>>> develop
