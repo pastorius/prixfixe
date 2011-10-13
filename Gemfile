@@ -1,4 +1,7 @@
 source "http://rubygems.org"
+
 group :test do 
-  gem 'minitest' if RUBY_VERSION =~ /^1\.8\..*/
+  platforms :ruby_18 do 
+    gem 'minitest'
+  end
 end
