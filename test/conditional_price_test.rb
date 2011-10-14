@@ -1,17 +1,19 @@
 require 'test_helper'
 
-class ConditionalPriceTest < MiniTest::Unit::TestCase
-  def setup
+describe ConditionalPrice do
+  before do
     @items = [
       OpenStruct.new({:enabled? => true}),
       OpenStruct.new({:enabled? => false}),
-      OpenStruct.new,
+      OpenStruct.new
     ]
   end
 
-  def test_calculate_with_attribute
-    proc = Proc.new {|item| item.enabled?}
-    model = ConditionalPrice.new(proc, ListPrice.new(25))
-    assert_equal 25, model.calculate(@items)
+  describe 'calculate' do
+    it 'calls back' do
+      proc = Proc.new {|item| item.enabled?}
+      model = ConditionalPrice.new(proc, ListPrice.new(25))
+      model.calculate(@items).must_equal 25
+    end
   end
 end

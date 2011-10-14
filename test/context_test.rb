@@ -4,75 +4,61 @@ class PrixFixe::Context
   def contexts() @contexts ||= []; end
 end
 
-class ContextTest < MiniTest::Unit::TestCase  
-  def setup
+describe Context do
+  before do
     @context = Context.new
     @model = model
     @items = items
   end
   
-  def test_add_context
-    subcontext = Context.new
-    @context.add_context(subcontext)
-    assert_equal subcontext, @context.contexts.first
+  describe 'adding a subcontext' do
+    it 'saves internally' do
+      subcontext = Context.new
+      @context.add_context(subcontext)
+      @context.contexts.first.must_equal subcontext
+    end
   end
   
-  def test_to_hash
+  it 'returns a hash' do
     @context = context
     
     hash = @context.to_hash
     
-    assert_equal @items, hash[:ref]
-    assert_equal @model, hash[:model]
-    assert_equal expected_subcontext, hash[:contexts].first
+    hash[:ref].must_equal @items
+    hash[:model].must_equal @model
+    hash[:contexts].first.must_equal expected_subcontext
   end
   
-  def test_subtotal
+  it 'calculates a subtotal' do
     @context = context
-    assert_equal items.size, @context.subtotal
+    @context.subtotal.must_equal items.size
   end
   
-  def test_total
-    @context = Context.new(@items, @model)
-    assert_equal items.size, @context.total
+  describe 'when calculating a total' do
+    it "includes its own refs" do
+      @context = Context.new(@items, @model)
+      @context.total.must_equal items.size
+    end
+  
+    it 'includes subcontexts' do
+      @context = context
+      @context.total.must_equal items.size * 2
+    end  
   end
   
-  def test_total_includes_subcontexts
-    @context = context
-    assert_equal items.size * 2, @context.total
-  end
-  
-  # def test_bill_includes_subtotal
-  #   @context = context
-  #   
-  #   bill = @context.bill
-  #   
-  #   assert_equal(@context.to_hash.merge(
-  #     :subtotal => @items.size,
-  #     :total => @items.size
-  #   ), bill)
-  # end
-  
-  # def test_bill_includes_total_subcontexts
-  #   @context = context
-  #   @context.add_context(context)
-  # 
-  #   assert_equal
-  # end
-
   def context
     c = Context.new(@items, @model)
     c.add_context(Context.new(@items, @model))
   end
-  
+
   def expected_subcontext
     { :ref => @items, :model => @model, :contexts => [] }
   end
-  
+
   def items
     (0..4).to_a
   end
-  
+
   def model
     ListPrice.new(1)
   end

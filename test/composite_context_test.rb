@@ -4,32 +4,38 @@ class PrixFixe::CompositeContext
   def contexts() @contexts ||= []; end
 end
 
-class CompositeContextTest < MiniTest::Unit::TestCase  
-  def setup
+describe CompositeContext do
+  before do
     @model = ListPrice.new(2)
     @context = CompositeContext.new(@model).
       add_context(subcontext).
       add_context(subcontext)
   end
   
-  def test_subtotal_overrides_composite_parts
-    assert_equal 8, @context.subtotal
+  describe 'subtotal' do
+    it 'overrides composite part pricing' do
+      @context.subtotal.must_equal 8
+    end
   end
   
-  def test_total_is_subtotal
-    assert_equal 8, @context.total
+  describe 'total' do
+    it 'equals the subtotal' do
+      @context.total.must_equal 8
+    end
   end
   
-  def test_to_hash
-    hash = @context.to_hash
-    assert !hash.include?(:ref)
-    assert_equal @model, hash[:model]
-    assert_equal subcontext.to_hash.to_s, hash[:contexts].first.to_s
-  end
+  describe 'to_hash' do
+    it 'includes ref, model, and context info' do
+      hash = @context.to_hash
+      hash.wont_include :ref
+      hash[:model].must_equal @model
+      hash[:contexts].first.to_s.must_equal subcontext.to_hash.to_s
+    end
   
-  def test_to_hash_includes_no_model_if_nil
-    @context = CompositeContext.new.add_context(subcontext)
-    assert !@context.to_hash.include?(:model)
+    it 'only includes model if it exists' do
+      @context = CompositeContext.new.add_context(subcontext)
+      @context.to_hash.wont_include :model
+    end
   end
   
   def subcontext

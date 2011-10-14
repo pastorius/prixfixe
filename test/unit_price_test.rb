@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class UnitPriceTestTest < MiniTest::Unit::TestCase
-  def setup
+describe UnitPrice do
+  before do
     @items = [
       OpenStruct.new({:recording_length => 10}),
       OpenStruct.new({:recording_length => 10}),
@@ -9,8 +9,8 @@ class UnitPriceTestTest < MiniTest::Unit::TestCase
     ]
   end
   
-  def test_calculate
+  it 'calculates based on an attribute' do
     model = UnitPrice.new(:recording_length, ListPrice.new(1))
-    assert_equal 20, model.calculate(@items)
+    model.calculate(@items).must_equal 20
   end
 end
