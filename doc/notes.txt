@@ -33,7 +33,7 @@ create pricing model
 		a way to calculate context charges
 		
 assume all models can operate on individual items or collections
-model = VolumePrice.new(StaticModel.new).add_tier(10, ListPrice.new(2.7))
+model = VolumePrice.new(Model.new).add_tier(10, ListPrice.new(2.7))
 calculators = model.charge_calculators_for(statements)
 
 contexts

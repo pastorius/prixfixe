@@ -2,7 +2,7 @@ require 'ostruct'
 
 module PrixFixe
   class Context
-    def initialize(ref = OpenStruct.new, model = StaticModel.new)
+    def initialize(ref = OpenStruct.new, model = Model.new)
       @ref = ref
       @model = model
     end

@@ -1,5 +1,5 @@
 require 'prixfixe/version'
-require 'prixfixe/static_model'
+require 'prixfixe/model'
 require 'prixfixe/list_price'
 require 'prixfixe/volume_price'
 require 'prixfixe/conditional_price'
